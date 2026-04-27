@@ -8,6 +8,19 @@ st.set_page_config(page_title="Biomass Prediction App", layout="wide")
 
 st.title("🌾 Hyperspectral Biomass Prediction")
 
+st.markdown("""
+### 📌 About this App
+This application allows users to upload hyperspectral datasets covering the spectral range **374 nm to 2500 nm (1 nm resolution)**.
+
+A **Random Forest regression model** is used to predict biomass based on spectral reflectance features extracted from the hyperspectral data.
+
+The workflow includes:
+- Data upload (CSV format)
+- Spectral preprocessing
+- Model-based biomass prediction
+- Download of results
+""")
+
 # Load model
 @st.cache_resource
 def load_model():
