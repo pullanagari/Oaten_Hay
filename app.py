@@ -78,7 +78,7 @@ with col1:
 with col2:
     st.markdown("""
     <div class="card">
-        <h3>⚙️ AI Processing</h3>
+        <h3>⚙️ Processing</h3>
         <p>Processing and Prediction pipeline.</p>
     </div>
     """, unsafe_allow_html=True)
