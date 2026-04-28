@@ -53,8 +53,11 @@ h1, h2, h3 {
 # ---------- HERO SECTION ----------
 st.markdown("""
 <div class="hero">
-    <h1>🌾 Biomass Intelligence Platform</h1>
-    <p>Turn hyperspectral data into actionable biomass insights using AI.</p>
+    <h1>🌾 Hyperspectral Biomass Prediction</h1>
+    <p>Turn hyperspectral data into actionable biomass insights. This application allows users to upload hyperspectral datasets covering the spectral range **374 nm to 2500 nm (1 nm resolution)**.
+
+A **Random Forest regression model** is used to predict biomass based on spectral reflectance features extracted from the hyperspectral data.
+</p>
     <p><b>374–2500 nm | 1 nm resolution | Random Forest Model</b></p>
 </div>
 """, unsafe_allow_html=True)
@@ -68,7 +71,7 @@ with col1:
     st.markdown("""
     <div class="card">
         <h3>📊 Upload Data</h3>
-        <p>Upload hyperspectral CSV datasets بسهولة and start analysis instantly.</p>
+        <p>Upload hyperspectral CSV datasets and start analysis instantly.</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -76,7 +79,7 @@ with col2:
     st.markdown("""
     <div class="card">
         <h3>⚙️ AI Processing</h3>
-        <p>Automated preprocessing and Random Forest-based prediction pipeline.</p>
+        <p>Processing and Prediction pipeline.</p>
     </div>
     """, unsafe_allow_html=True)
 
