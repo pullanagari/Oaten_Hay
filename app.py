@@ -54,9 +54,9 @@ h1, h2, h3 {
 st.markdown("""
 <div class="hero">
     <h1>🌾 Hyperspectral Biomass Prediction</h1>
-    <p>Turn hyperspectral data into actionable biomass insights. This application allows users to upload hyperspectral datasets covering the spectral range **374 nm to 2500 nm (1 nm resolution)**.
-
-A **Random Forest regression model** is used to predict biomass based on spectral reflectance features extracted from the hyperspectral data.
+    <p>Transform hyperspectral reflectance data into quantitative estimates of above-ground biomass (t ha⁻¹) and crude protein (CP, %). 
+    This application enables users to upload hyperspectral datasets spanning the spectral range 374–2500 nm at 1 nm resolution. 
+    A machine learning framework based on Random Forest regression is employed to model the relationship between spectral features and target variables, providing robust predictions of both biomass and crude protein from the input reflectance data.
 </p>
     <p><b>374–2500 nm | 1 nm resolution </b></p>
 </div>
