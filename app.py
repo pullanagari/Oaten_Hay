@@ -94,11 +94,14 @@ with col3:
 st.write("")
 
 # ---------- MODEL ----------
+# ---------- MODEL ----------
 @st.cache_resource
-def load_model():
-    return joblib.load("biomass_model.pkl")
+def load_models():
+    biomass_model = joblib.load("biomass_model.pkl")
+    cp_model = joblib.load("CP_model.pkl")
+    return biomass_model, cp_model
 
-model = load_model()
+biomass_model, cp_model = load_models()
 
 # ---------- UPLOAD SECTION ----------
 st.markdown('<div class="upload-box">', unsafe_allow_html=True)
@@ -125,11 +128,30 @@ if uploaded_file:
     X_smooth = pd.DataFrame(X_smooth)
 
     # Prediction
-    predictions = model.predict(X_smooth)
-    df['Predicted_Biomass'] = predictions
+    biomass_pred = biomass_model.predict(X_smooth)
+    cp_pred = cp_model.predict(X_smooth)
+    df['Predicted_Biomass'] = biomass_pred
+    df['Predicted_CP'] = cp_pred
 
     # ---------- RESULTS ----------
-    st.subheader("🌱 Biomass Predictions")
+    st.subheader("🌱 Predictions")
+
+    st.dataframe(
+        df[['Predicted_Biomass', 'Predicted_CP']],
+        use_container_width=True
+    )
+    
+    # Charts
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.write("### Biomass (t/ha)")
+        st.line_chart(df['Predicted_Biomass'])
+    
+    with col2:
+        st.write("### Crude Protein (%)")
+        st.line_chart(df['Predicted_CP'])
+    
     st.dataframe(df[['Predicted_Biomass']], use_container_width=True)
 
     # Simple chart
