@@ -53,10 +53,10 @@ h1, h2, h3 {
 # ---------- HERO SECTION ----------
 st.markdown("""
 <div class="hero">
-    <h1>🌾 Hyperspectral Biomass Prediction</h1>
-    <p>Transform hyperspectral reflectance data into quantitative estimates of above-ground biomass (t ha⁻¹) and crude protein (CP, %). 
-    This application enables users to upload hyperspectral datasets spanning the spectral range 374–2500 nm at 1 nm resolution. 
-    A machine learning framework based on Random Forest regression is employed to model the relationship between spectral features and target variables, providing robust predictions of both biomass and crude protein from the input reflectance data.
+    <h1>🌾 Hyperspectral Estimation of Biomass and Crude Protein in Oaten Hay</h1>
+    <p>Transform hyperspectral reflectance data of Oaten hay canopy into quantitative estimates of above-ground biomass (t ha⁻¹) and crude protein (CP, %). 
+    This application enables users to upload hyperspectral data spanning in the spectral range 374–2500 nm at 1 nm resolution. 
+    A machine learning framework based on Random Forest regression is employed to model the relationship between spectral features and target variables, providing robust predictions of both biomass and crude protein.
 </p>
     <p><b>374–2500 nm | 1 nm resolution </b></p>
 </div>
