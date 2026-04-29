@@ -87,7 +87,7 @@ with col3:
     st.markdown("""
     <div class="card">
         <h3>📈 Instant Results</h3>
-        <p>Get biomass predictions and download results in seconds.</p>
+        <p>Get biomass predictions (tonnes/ha) and download results in seconds.</p>
     </div>
     """, unsafe_allow_html=True)
 
