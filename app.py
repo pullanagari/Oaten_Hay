@@ -134,43 +134,43 @@ if uploaded_file:
     df['Predicted_CP'] = cp_pred
 
     # ---------- RESULTS ----------
-st.subheader("🌱 Predictions")
-
-# --- Summary metrics ---
-col1, col2 = st.columns(2)
-
-with col1:
-    st.metric("Mean Biomass (t/ha)", round(df['Predicted_Biomass'].mean(), 2))
-
-with col2:
-    st.metric("Mean Crude Protein (%)", round(df['Predicted_CP'].mean(), 2))
-
-
-# --- Charts ---
-col1, col2 = st.columns(2)
-
-with col1:
-    st.write("### Biomass (t/ha)")
-    st.line_chart(df['Predicted_Biomass'])
-
-with col2:
-    st.write("### Crude Protein (%)")
-    st.line_chart(df['Predicted_CP'])
-
-
-# --- Table ---
-st.write("### Prediction Table")
-st.dataframe(
-    df[['Predicted_Biomass', 'Predicted_CP']],
-    use_container_width=True
-)
-
-
-# --- Download ---
-csv = df.to_csv(index=False).encode('utf-8')
-st.download_button(
-    "⬇️ Download Results",
-    csv,
-    "predictions.csv",
-    mime="text/csv"
-)
+    st.subheader("🌱 Predictions")
+    
+    # --- Summary metrics ---
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.metric("Mean Biomass (t/ha)", round(df['Predicted_Biomass'].mean(), 2))
+    
+    with col2:
+        st.metric("Mean Crude Protein (%)", round(df['Predicted_CP'].mean(), 2))
+    
+    
+    # --- Charts ---
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.write("### Biomass (t/ha)")
+        st.line_chart(df['Predicted_Biomass'])
+    
+    with col2:
+        st.write("### Crude Protein (%)")
+        st.line_chart(df['Predicted_CP'])
+    
+    
+    # --- Table ---
+    st.write("### Prediction Table")
+    st.dataframe(
+        df[['Predicted_Biomass', 'Predicted_CP']],
+        use_container_width=True
+    )
+    
+    
+    # --- Download ---
+    csv = df.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        "⬇️ Download Results",
+        csv,
+        "predictions.csv",
+        mime="text/csv"
+    )
