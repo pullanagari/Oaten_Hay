@@ -58,7 +58,7 @@ st.markdown("""
 
 A **Random Forest regression model** is used to predict biomass based on spectral reflectance features extracted from the hyperspectral data.
 </p>
-    <p><b>374–2500 nm | 1 nm resolution | Random Forest Model</b></p>
+    <p><b>374–2500 nm | 1 nm resolution </b></p>
 </div>
 """, unsafe_allow_html=True)
 
