@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 import joblib
 from scipy.signal import savgol_filter
+import io
+import qrcode
 
 # ---------- Page Config ----------
 st.set_page_config(
@@ -10,6 +12,38 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+#
+st.title("QR Code Generator")
+
+# Get user input
+user_input = st.text_input("Enter text or URL to encode:", "https://streamlit.io")
+
+if user_input:
+  # Generate QR code
+  qr = qrcode.QRCode(version=1, box_size=10, border=4)
+  qr.add_data(user_input)
+  qr.make(fit=True)
+
+  # Create an image from the QR code instance
+  img = qr.make_image(fill_color="black", back_color="white")
+
+  # Save image to a byte buffer for display and download
+  buf = io.BytesIO()
+  img.save(buf, format="PNG")
+  byte_im = buf.getvalue()
+
+  # Display QR code in the app
+  st.image(byte_im, caption="Generated QR Code", width=300)
+
+  # Provide a download button
+  st.download_button(
+      label="Download QR Code",
+      data=byte_im,
+      file_name="qrcode.png",
+      mime="image/png",
+  )
+
+
 
 # ---------- Custom CSS ----------
 st.markdown("""
