@@ -1,6 +1,8 @@
-streamlit
-pandas
-numpy
+qrcode
+pillow
 scikit-learn
 scipy
 joblib
+pandas
+numpy
+
