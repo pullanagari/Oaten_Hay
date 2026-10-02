@@ -5,6 +5,7 @@ import pandas as pd
 import qrcode
 import streamlit as st
 from scipy.signal import savgol_filter
+from streamlit_javascript import st_javascript
 
 # ---------- Page Config ----------
 st.set_page_config(
@@ -54,35 +55,42 @@ h1, h2, h3 {
     unsafe_allow_html=True,
 )
 
-# ---------- SIDEBAR: QR CODE GENERATOR ----------
+# ---------- SIDEBAR: DYNAMIC QR CODE GENERATOR ----------
 with st.sidebar:
-  st.header("QR Code Generator")
-  user_input = st.text_input(
-      "Enter text or URL to encode:", "https://streamlit.io"
+  st.header("QR Code Link")
+
+  # 1. Dynamically fetch the current parent window URL using JavaScript
+  detected_url = st_javascript(
+      "await fetch('').then(r => window.parent.location.href)"
   )
 
+  # Fallback: if JS execution is loading or returns 0/None, give a placeholder
+  if not detected_url or detected_url == 0:
+    app_url = "https://share.streamlit.io"
+  else:
+    app_url = str(detected_url)
+
+  # 2. Allow user to confirm or overwrite the address
+  user_input = st.text_input("QR Code URL Target:", value=app_url)
+
   if user_input:
-    # Generate QR code
+    # Generate QR code targeting the app url
     qr = qrcode.QRCode(version=1, box_size=10, border=4)
     qr.add_data(user_input)
     qr.make(fit=True)
 
-    # Create an image from the QR code instance
     img = qr.make_image(fill_color="black", back_color="white")
 
-    # Save image to a byte buffer for display and download
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     byte_im = buf.getvalue()
 
-    # Display QR code in the app sidebar
-    st.image(byte_im, caption="Generated QR Code", use_container_width=True)
+    st.image(byte_im, caption="Scan to visit this app", use_container_width=True)
 
-    # Provide a download button
     st.download_button(
         label="Download QR Code",
         data=byte_im,
-        file_name="qrcode.png",
+        file_name="app_qrcode.png",
         mime="image/png",
     )
 
@@ -145,7 +153,6 @@ st.write("")
 # ---------- MODEL LOADING ----------
 @st.cache_resource
 def load_models():
-  # Note: Ensure these file paths match your deployment environment setup
   biomass_model = joblib.load("biomass_model.pkl")
   cp_model = joblib.load("CP_model.pkl")
   return biomass_model, cp_model
@@ -155,7 +162,6 @@ biomass_model, cp_model = load_models()
 
 # ---------- UPLOAD SECTION ----------
 st.markdown('<div class="upload-box">', unsafe_allow_html=True)
-# FIXED: Changed 'types' to 'type' parameter
 uploaded_file = st.file_uploader("📂 Upload Hyperspectral CSV", type=["csv"])
 st.markdown("</div>", unsafe_allow_html=True)
 
