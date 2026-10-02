@@ -1,52 +1,19 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-import joblib
-from scipy.signal import savgol_filter
 import io
+import joblib
+import numpy as np
+import pandas as pd
 import qrcode
+import streamlit as st
+from scipy.signal import savgol_filter
 
 # ---------- Page Config ----------
 st.set_page_config(
-    page_title="Biomass AI",
-    layout="wide",
-    initial_sidebar_state="collapsed"
+    page_title="Biomass AI", layout="wide", initial_sidebar_state="collapsed"
 )
-#
-st.title("QR Code Generator")
-
-# Get user input
-user_input = st.text_input("Enter text or URL to encode:", "https://streamlit.io")
-
-if user_input:
-  # Generate QR code
-  qr = qrcode.QRCode(version=1, box_size=10, border=4)
-  qr.add_data(user_input)
-  qr.make(fit=True)
-
-  # Create an image from the QR code instance
-  img = qr.make_image(fill_color="black", back_color="white")
-
-  # Save image to a byte buffer for display and download
-  buf = io.BytesIO()
-  img.save(buf, format="PNG")
-  byte_im = buf.getvalue()
-
-  # Display QR code in the app
-  st.image(byte_im, caption="Generated QR Code", width=300)
-
-  # Provide a download button
-  st.download_button(
-      label="Download QR Code",
-      data=byte_im,
-      file_name="qrcode.png",
-      mime="image/png",
-  )
-
-
 
 # ---------- Custom CSS ----------
-st.markdown("""
+st.markdown(
+    """
 <style>
 .main {
     background-color: #f7f9fb;
@@ -72,6 +39,7 @@ h1, h2, h3 {
     border-radius: 12px;
     background: white;
     box-shadow: 0px 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 1rem;
 }
 
 .upload-box {
@@ -82,10 +50,45 @@ h1, h2, h3 {
     background-color: white;
 }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
-# ---------- HERO SECTION ----------
-st.markdown("""
+# ---------- SIDEBAR: QR CODE GENERATOR ----------
+with st.sidebar:
+  st.header("QR Code Generator")
+  user_input = st.text_input(
+      "Enter text or URL to encode:", "https://streamlit.io"
+  )
+
+  if user_input:
+    # Generate QR code
+    qr = qrcode.QRCode(version=1, box_size=10, border=4)
+    qr.add_data(user_input)
+    qr.make(fit=True)
+
+    # Create an image from the QR code instance
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    # Save image to a byte buffer for display and download
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    byte_im = buf.getvalue()
+
+    # Display QR code in the app sidebar
+    st.image(byte_im, caption="Generated QR Code", use_container_width=True)
+
+    # Provide a download button
+    st.download_button(
+        label="Download QR Code",
+        data=byte_im,
+        file_name="qrcode.png",
+        mime="image/png",
+    )
+
+# ---------- MAIN HERO SECTION ----------
+st.markdown(
+    """
 <div class="hero">
     <h1>🌾 Hyperspectral Estimation of Biomass and Crude Protein in Oaten Hay</h1>
     <p>Transform hyperspectral reflectance data of Oaten hay canopy into quantitative estimates of above-ground biomass (t ha⁻¹) and crude protein (CP, %). 
@@ -94,7 +97,9 @@ st.markdown("""
 </p>
     <p><b>374–2500 nm | 1 nm resolution </b></p>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 st.write("")
 
@@ -102,109 +107,110 @@ st.write("")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.markdown("""
+  st.markdown(
+      """
     <div class="card">
         <h3>📊 Upload Data</h3>
         <p>Upload hyperspectral CSV datasets and start analysis instantly.</p>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+      unsafe_allow_html=True,
+  )
 
 with col2:
-    st.markdown("""
+  st.markdown(
+      """
     <div class="card">
         <h3>⚙️ Processing</h3>
         <p>Processing and Prediction pipeline.</p>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+      unsafe_allow_html=True,
+  )
 
 with col3:
-    st.markdown("""
+  st.markdown(
+      """
     <div class="card">
         <h3>📈 Instant Results</h3>
         <p>Get biomass predictions (tonnes/ha) and download results in seconds.</p>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+      unsafe_allow_html=True,
+  )
 
 st.write("")
 
-# ---------- MODEL ----------
 
+# ---------- MODEL LOADING ----------
 @st.cache_resource
 def load_models():
-    biomass_model = joblib.load("biomass_model.pkl")
-    cp_model = joblib.load("CP_model.pkl")
-    return biomass_model, cp_model
+  # Note: Ensure these file paths match your deployment environment setup
+  biomass_model = joblib.load("biomass_model.pkl")
+  cp_model = joblib.load("CP_model.pkl")
+  return biomass_model, cp_model
+
 
 biomass_model, cp_model = load_models()
 
 # ---------- UPLOAD SECTION ----------
 st.markdown('<div class="upload-box">', unsafe_allow_html=True)
-
+# FIXED: Changed 'types' to 'type' parameter
 uploaded_file = st.file_uploader("📂 Upload Hyperspectral CSV", type=["csv"])
+st.markdown("</div>", unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)
-
-# ---------- PROCESS ----------
+# ---------- PROCESS Pipeline ----------
 if uploaded_file:
-    df = pd.read_csv(uploaded_file)
+  df = pd.read_csv(uploaded_file)
 
-    st.subheader("🔍 Data Preview")
-    st.dataframe(df.head(), use_container_width=True)
+  st.subheader("🔍 Data Preview")
+  st.dataframe(df.head(), use_container_width=True)
 
-    # Select spectral columns
-    start_col = st.number_input("Start Column", 0, len(df.columns)-1, 0)
-    end_col = st.number_input("End Column", 1, len(df.columns), len(df.columns))
+  # Select spectral columns
+  start_col = st.number_input("Start Column Index", 0, len(df.columns) - 1, 0)
+  end_col = st.number_input(
+      "End Column Index", 1, len(df.columns), len(df.columns)
+  )
 
-    X = df.iloc[:, start_col:end_col]
+  X = df.iloc[:, start_col:end_col]
 
-    # Preprocessing
-    X_smooth = savgol_filter(X, 9, 3, deriv=1, mode='nearest')
-    X_smooth = pd.DataFrame(X_smooth)
+  # Preprocessing (Savitzky-Golay Filter)
+  X_smooth = savgol_filter(X, 9, 3, deriv=1, mode="nearest")
+  X_smooth = pd.DataFrame(X_smooth)
 
-    # Prediction
-    biomass_pred = biomass_model.predict(X_smooth)
-    cp_pred = cp_model.predict(X_smooth)
-    df['Predicted_Biomass'] = biomass_pred
-    df['Predicted_CP'] = cp_pred
+  # Prediction Engine
+  biomass_pred = biomass_model.predict(X_smooth)
+  cp_pred = cp_model.predict(X_smooth)
+  df["Predicted_Biomass"] = biomass_pred
+  df["Predicted_CP"] = cp_pred
 
-    # ---------- RESULTS ----------
-    st.subheader("🌱 Predictions")
-    
-    # --- Summary metrics ---
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.metric("Mean Biomass (t/ha)", round(df['Predicted_Biomass'].mean(), 2))
-    
-    with col2:
-        st.metric("Mean Crude Protein (%)", round(df['Predicted_CP'].mean(), 2))
-    
-    
-    # --- Charts ---
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.write("### Biomass (t/ha)")
-        st.line_chart(df['Predicted_Biomass'])
-    
-    with col2:
-        st.write("### Crude Protein (%)")
-        st.line_chart(df['Predicted_CP'])
-    
-    
-    # --- Table ---
-    st.write("### Prediction Table")
-    st.dataframe(
-        df[['Predicted_Biomass', 'Predicted_CP']],
-        use_container_width=True
-    )
-    
-    
-    # --- Download ---
-    csv = df.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        "⬇️ Download Results",
-        csv,
-        "predictions.csv",
-        mime="text/csv"
-    )
+  # ---------- RESULTS DISPLAY ----------
+  st.subheader("🌱 Predictions")
+
+  # --- Summary metrics ---
+  m_col1, m_col2 = st.columns(2)
+  with m_col1:
+    st.metric("Mean Biomass (t/ha)", round(df["Predicted_Biomass"].mean(), 2))
+  with m_col2:
+    st.metric("Mean Crude Protein (%)", round(df["Predicted_CP"].mean(), 2))
+
+  # --- Charts ---
+  c_col1, c_col2 = st.columns(2)
+  with c_col1:
+    st.write("### Biomass (t/ha)")
+    st.line_chart(df["Predicted_Biomass"])
+  with c_col2:
+    st.write("### Crude Protein (%)")
+    st.line_chart(df["Predicted_CP"])
+
+  # --- Data Table View ---
+  st.write("### Prediction Table")
+  st.dataframe(
+      df[["Predicted_Biomass", "Predicted_CP"]], use_container_width=True
+  )
+
+  # --- File Downloader ---
+  csv = df.to_csv(index=False).encode("utf-8")
+  st.download_button(
+      "⬇️ Download Results", csv, "predictions.csv", mime="text/csv"
+  )
